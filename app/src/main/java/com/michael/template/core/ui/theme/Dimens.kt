@@ -58,4 +58,7 @@ object Dimens {
     val ToolBarElevationHalf = 4.dp
 
     val HeaderTextSize = 34.sp
+
+    val FontSizeDefault = 16.sp
+    val FontSizeHalf = 8.sp
 }
