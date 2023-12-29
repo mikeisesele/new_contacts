@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.room.Room
 import com.michael.template.core.data.AppDatabase
 import com.michael.template.core.data.SharedPref
+import com.michael.template.feature.contacts.local.ContactDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,7 +35,6 @@ object LocalModule {
         return context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
     }
 
-    /*Provides Session Manager*/
     @Singleton
     @Provides
     fun providesSharedPreference(
@@ -42,4 +42,8 @@ object LocalModule {
     ): SharedPref {
         return SharedPref(sharedPreferences)
     }
+
+    @Provides
+    @Singleton
+    fun provideWallPaperDao(database: AppDatabase): ContactDAO = database.contactDAO()
 }
