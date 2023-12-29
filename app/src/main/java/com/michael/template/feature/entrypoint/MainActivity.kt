@@ -1,48 +1,77 @@
 package com.michael.template.feature.entrypoint
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
+import com.michael.template.core.ui.extensions.rememberStateWithLifecycle
 import com.michael.template.core.ui.theme.TemplateTheme
+import com.michael.template.feature.contacts.contactscreen.ContactScreen
+import com.michael.template.feature.contacts.contactscreen.ContactScreenViewModel
+import com.permissionx.guolindev.PermissionX
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private val contactScreenViewModel: ContactScreenViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val state by rememberStateWithLifecycle(contactScreenViewModel.state)
+
             TemplateTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    Greeting("Android")
+                    ContactScreen(
+                        contacts = state.updatedContacts,
+                        isLoading = state.loading,
+                        clearDB = { contactScreenViewModel.clearDB() },
+                    )
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier,
-    )
-}
+    override fun onResume() {
+        super.onResume()
+        scheduleContactsWorkManager()
+    }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TemplateTheme {
-        Greeting("Android")
+    private fun scheduleContactsWorkManager() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_CONTACTS,
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            contactScreenViewModel.getLatestContacts()
+        } else {
+            PermissionX.init(this)
+                .permissions(Manifest.permission.READ_CONTACTS)
+                .onExplainRequestReason { scope, deniedList ->
+                    scope.showRequestReasonDialog(
+                        deniedList,
+                        "Contact permission is required io use this app",
+                        "OK",
+                        "Cancel",
+                    )
+                }
+                .request { allGranted, grantedList, deniedList ->
+                    if (allGranted) {
+                        contactScreenViewModel.getLatestContacts()
+                    }
+                }
+        }
     }
 }
