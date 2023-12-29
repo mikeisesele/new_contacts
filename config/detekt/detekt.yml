@@ -544,6 +544,7 @@ style:
     active: true
     imports: []
     forbiddenPatterns: '.*Contract$'
+    excludes: ["**/ContactSyncManager.kt"]
   ForbiddenMethodCall:
     active: false
     methods: ['kotlin.io.println', 'kotlin.io.print']

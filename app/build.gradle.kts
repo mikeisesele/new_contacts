@@ -73,7 +73,9 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.hilt:hilt-work:1.1.0")
 
     // Compose
     val compose = "1.5.4"
@@ -82,7 +84,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.navigation:navigation-compose:2.7.4")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("androidx.compose.runtime:runtime:$compose")
     implementation("androidx.compose.foundation:foundation:$compose")
     implementation("androidx.compose.foundation:foundation-layout:$compose")
@@ -106,12 +108,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     // Material
-    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.compose.material3:material3:1.1.2")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.48.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     kapt("com.google.dagger:hilt-compiler:2.48.1")
 
     // Retrofit
@@ -122,19 +124,31 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     // Room
-    annotationProcessor("androidx.room:room-compiler:2.6.0")
-    implementation("androidx.room:room-runtime:2.6.0")
-    kapt("androidx.room:room-compiler:2.6.0")
-    implementation("androidx.room:room-ktx:2.6.0")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
     // Encrypted prefs
 
     implementation("androidx.security:security-crypto:1.0.0")
 
     // Detekt
-    compileOnly("io.gitlab.arturbosch.detekt:detekt-api:1.21.0")
+    compileOnly("io.gitlab.arturbosch.detekt:detekt-api:1.23.1")
 
     // Compose Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.4")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    // Gson
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    // worker
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    androidTestImplementation("androidx.work:work-testing:2.9.0")
+
+    // Logging
+//    implementation("com.jakewharton.timber:timber:4.7.1")
+
+    implementation("com.guolindev.permissionx:permissionx:1.7.1")
 }
