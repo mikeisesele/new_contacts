@@ -147,8 +147,9 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     androidTestImplementation("androidx.work:work-testing:2.9.0")
 
-    // Logging
-//    implementation("com.jakewharton.timber:timber:4.7.1")
-
     implementation("com.guolindev.permissionx:permissionx:1.7.1")
+
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    implementation("androidx.core:core-splashscreen:1.1.0-alpha02")
 }
