@@ -12,8 +12,8 @@ class ContactRepository @Inject constructor(private val contactDAO: ContactDAO) 
     fun getDistinctContacts() = contactDAO.getDistinctContacts()
     fun getOldContacts() = contactDAO.getOldContacts()
     suspend fun deleteOldContacts() = contactDAO.deleteOldContacts()
-    suspend fun deleteDistinctContactsAfter30Days(oldIDs: List<Long>) {
-        contactDAO.deleteDistinctContactsAfter30Days(oldIDs)
+    suspend fun deleteDistinctContactsAfterSetDays(oldIDs: List<Long>) {
+        contactDAO.deleteDistinctContactsAfterSetDays(oldIDs)
     }
 
     suspend fun deleteNewlyFetchedContacts() = contactDAO.deleteNewlyFetchedContacts()

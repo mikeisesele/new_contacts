@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.kotlin.utils.ifEmpty
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -62,7 +63,7 @@ class ContactScreenViewModel @Inject constructor(
     val events
         get() = eventsFlow.receiveAsFlow()
 
-    private val daysPersisted = loadDaysPersisted()
+    private var daysPersisted = loadDaysPersisted()
     private val defaultSet = sharedPref.loadFromSharedPref<Boolean>(PreferenceType.BOOLEAN, DEFAULT_PERSISTENCE_SET)
 
     private fun launch(block: suspend CoroutineScope.() -> Unit) {
@@ -131,7 +132,7 @@ class ContactScreenViewModel @Inject constructor(
                 model.dateAdded.isBefore(currentTime.minusDays(daysPersisted))
             }
             val oldIDs = oldContacts.map { it.id }
-            contactsRepository.deleteDistinctContactsAfter30Days(oldIDs)
+            contactsRepository.deleteDistinctContactsAfterSetDays(oldIDs)
         }
     }
 
@@ -143,6 +144,7 @@ class ContactScreenViewModel @Inject constructor(
         }
     }
     fun handlePersistenceDefaults() {
+        daysPersisted = loadDaysPersisted()
         if (!defaultSet) {
             displayDefaultOptions()
         } else {
@@ -161,8 +163,9 @@ class ContactScreenViewModel @Inject constructor(
             MONTHS.THREE -> sharedPref.saveToSharedPref(PERSISTENCE_KEY, THREE_MONTH)
         }
         sharedPref.saveToSharedPref(DEFAULT_PERSISTENCE_SET, true)
+        daysPersisted = loadDaysPersisted()
         updateState { state ->
-            state.copy(persistingDays = loadDaysPersisted().toString())
+            state.copy(persistingDays = daysPersisted.toString())
         }
         getLatestContacts()
     }

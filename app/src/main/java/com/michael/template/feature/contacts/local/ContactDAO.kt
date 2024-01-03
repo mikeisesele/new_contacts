@@ -43,5 +43,5 @@ interface ContactDAO {
     suspend fun getMatchingContacts(query: String): List<DistinctContactModel>
 
     @Query("DELETE FROM distinct_contact where distinct_contact.id in (:list)")
-    suspend fun deleteDistinctContactsAfter30Days(list: List<Long>): Int
+    suspend fun deleteDistinctContactsAfterSetDays(list: List<Long>): Int
 }
