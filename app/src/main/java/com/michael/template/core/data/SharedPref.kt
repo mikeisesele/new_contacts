@@ -18,7 +18,7 @@ class SharedPref @Inject constructor(private val sharedPreferences: SharedPrefer
                 PreferenceType.INT -> getInt(key, 0) as T
                 PreferenceType.BOOLEAN -> getBoolean(key, false) as T
                 PreferenceType.FLOAT -> getFloat(key, 0f) as T
-                PreferenceType.LONG -> getLong(key, 0) as T
+                PreferenceType.LONG -> getLong(key, 0L) as T
             }
         }
     }
@@ -35,6 +35,7 @@ class SharedPref @Inject constructor(private val sharedPreferences: SharedPrefer
                     is Long -> putLong(prefKey, prefValue)
                 }
             }
+            commit()
         }
     }
 
