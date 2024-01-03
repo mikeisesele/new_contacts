@@ -1,4 +1,4 @@
-package com.michael.template.feature.contacts.utils
+package com.michael.template.feature.contacts.local
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
