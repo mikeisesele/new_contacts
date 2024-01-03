@@ -1,7 +1,7 @@
 package com.michael.template.core.network
 
 import android.util.Log
-import com.nb.benefitspro.core.network.data.model.exceptions.DataContentNullException
+import com.michael.template.core.network.exceptions.DataContentNullException
 import org.jetbrains.kotlin.builtins.StandardNames.FqNames.throwable
 
 /**

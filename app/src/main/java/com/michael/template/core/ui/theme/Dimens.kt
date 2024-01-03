@@ -19,46 +19,54 @@ object Dimens {
     val PaddingDoubleThreeFourths = 24.dp
     val PaddingDouble = 32.dp
     val PaddingTriple = 48.dp
-
+    val Padding35 = 35.dp
+    val Padding40 = 40.dp
+    val Padding55 = 55.dp
     val RadiusDefault = 4.dp
+
     val RadiusDouble = 8.dp
     val RadiusTriple = 12.dp
     val RadiusQuadruple = 16.dp
     val RadiusFull = 28.dp
-
     val SimpleProductCardHeight = 216.dp
+
     val SimpleProductCardWidth = 160.dp
     val SimpleProductImageHeight = 128.dp
-
     val DividerStrokeWidth = 1.dp
+
     val BorderStrokeWidth = 1.dp
     val DoubleBorderStrokeWidth = 2.dp
-
     val ButtonHeight = 56.dp
-    val ButtonDefaultElevation = 0.dp
 
+    val ButtonDefaultElevation = 0.dp
     val LineHeightLow = 18.sp
+
     val LineHeightDefault = 22.sp
     val LineHeightLarge = 35.sp
-
     val IconTiny = 14.dp
+
     val IconSmall = 18.dp
     val IconSizeDefault = 24.dp
     val IconMedium = 28.dp
     val IconSizeLarge = 32.dp
     val IconSizeExtraLarge = 36.dp
-
     val CardElevation = 4.dp
+
     val CardElevationHalf = 2.dp
     val CardElevationDouble = 8.dp
     val BottomSheetElevation = 16.dp
     val OptionsElevation = 12.dp
-
     val ToolBarElevation = 8.dp
-    val ToolBarElevationHalf = 4.dp
 
+    val ToolBarElevationHalf = 4.dp
     val HeaderTextSize = 34.sp
 
     val FontSizeDefault = 16.sp
+    val FontSize8 = 8.sp
+    val FontSize12 = 12.sp
+    val FontSize10 = 10.sp
+    val FontSize4 = 4.sp
+
     val FontSizeHalf = 8.sp
+    val Text30 = 30.sp
 }

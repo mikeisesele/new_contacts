@@ -1,28 +1,16 @@
-package com.michael.template.feature.contacts.utils
+package com.michael.template.util
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 
-const val THIRTY_DAYS = 30L
-
-fun LocalDateTime?.isWithinThirtyDaysFromToday(): Boolean = this?.let {
+fun LocalDateTime?.isWithinDaysFromToday(days: Long): Boolean = this?.let {
     val currentTime = LocalDateTime.now()
-    it.isAfter(currentTime.minusDays(THIRTY_DAYS)) && it.isBeforeOrEqual(currentTime)
+    it.isAfter(currentTime.minusDays(days)) && it.isBeforeOrEqual(currentTime)
 } ?: false
 
 fun LocalDateTime.isBeforeOrEqual(other: LocalDateTime): Boolean = isBefore(other) || isEqual(other)
-
-// fun LocalDateTime.toReadable(): String {
-//    val currentTime = LocalDateTime.now()
-//    return when (val daysAgo = ChronoUnit.DAYS.between(this, currentTime)) {
-//        0L -> "Added today"
-//        1L -> "Added yesterday"
-//        in 2..30 -> "Added $daysAgo days ago"
-//        else -> "Added more than 30 days ago"
-//    }
-// }
 
 @Suppress("MagicNumber")
 fun LocalDateTime.toReadable(): String {
