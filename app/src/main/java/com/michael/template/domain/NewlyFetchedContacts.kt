@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.LocalDateTime
 
-@Entity(tableName = "old_contacts")
+@Entity(tableName = "newly_fetched")
 @Keep
-data class OldContactModel(
+data class NewlyFetchedContacts(
     @PrimaryKey
     val id: Long,
     val name: String,
@@ -15,7 +15,12 @@ data class OldContactModel(
     val dateAdded: LocalDateTime? = null,
 )
 
-fun OldContactModel.toContactModel(): DistinctContactModel = DistinctContactModel(
+fun NewlyFetchedContacts.toOldContactModel(): OldContactModel = OldContactModel(
+    id = id,
+    name = name,
+    phones = phones,
+)
+fun NewlyFetchedContacts.toUniqueContactModel(): DistinctContactModel = DistinctContactModel(
     id = id,
     name = name,
     phones = phones,

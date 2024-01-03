@@ -1,4 +1,4 @@
-package com.michael.template.feature.contacts.contactscreen
+package com.michael.template.feature.contacts.domain.model
 
 import java.time.LocalDateTime
 data class ContactUiModel(
