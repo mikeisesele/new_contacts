@@ -37,7 +37,7 @@ fun DefaultOptionsComponent(onDurationSelected: (MONTHS) -> Unit) {
                 vertical = Dimens.PaddingDouble,
                 horizontal = Padding40,
             ),
-            text = "How long should we display newly saved contacts",
+            text = "How long should we display your newly saved contacts",
             textAlign = TextAlign.Center,
         )
 
