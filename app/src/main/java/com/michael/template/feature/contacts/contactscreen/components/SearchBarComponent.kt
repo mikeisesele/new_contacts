@@ -7,12 +7,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +28,6 @@ import com.michael.template.core.ui.theme.Dimens
 
 private const val UNFOCUSED_ALPHA = 0.4f
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBarComponent(
     onValueChange: (String) -> Unit,
@@ -50,7 +48,7 @@ fun SearchBarComponent(
         leadingIcon = {
             Icon(imageVector = Icons.Default.Search, contentDescription = "")
         },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+        colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = Color.Gray.copy(UNFOCUSED_ALPHA),
         ),
