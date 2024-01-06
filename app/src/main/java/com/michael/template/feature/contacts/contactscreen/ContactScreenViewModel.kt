@@ -173,5 +173,4 @@ class ContactScreenViewModel @Inject constructor(
     }
 
     private fun loadDaysPersisted() = sharedPref.loadFromSharedPref<Long>(PreferenceType.LONG, PERSISTENCE_KEY)
-
 }
