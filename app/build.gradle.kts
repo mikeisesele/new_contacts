@@ -46,6 +46,7 @@ android {
         val rules = "proguard-rules.pro"
         release {
             isMinifyEnabled = false
+            isDebuggable = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), rules)
         }
     }
