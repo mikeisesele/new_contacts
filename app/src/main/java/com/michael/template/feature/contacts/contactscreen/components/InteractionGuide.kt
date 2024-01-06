@@ -34,7 +34,7 @@ fun InteractionGuide(dismissDialog: () -> Unit) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = Dimens.PaddingHalf)
+                .padding(Dimens.PaddingHalf)
                 .background(MaterialTheme.colorScheme.onBackground, shape = RoundedCornerShape(Dimens.RadiusDouble)),
         ) {
             item {
@@ -45,7 +45,7 @@ fun InteractionGuide(dismissDialog: () -> Unit) {
                     style = TextStyle(fontWeight = FontWeight.Bold),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = PaddingDefault),
+                        .padding(PaddingDefault),
                 )
             }
             items(guideLists) {

@@ -14,8 +14,9 @@ fun LocalDateTime.isBeforeOrEqual(other: LocalDateTime): Boolean = isBefore(othe
 
 @Suppress("MagicNumber")
 fun LocalDateTime.toReadable(): String {
-    val currentTime = LocalDateTime.now()
-    val daysAgo = ChronoUnit.DAYS.between(this, currentTime)
+    val currentTime = LocalDateTime.now().toLocalDate().atStartOfDay()
+    val inputTime = this.toLocalDate().atStartOfDay()
+    val daysAgo = ChronoUnit.DAYS.between(inputTime, currentTime)
 
     return when {
         daysAgo == 0L -> "Added today"
