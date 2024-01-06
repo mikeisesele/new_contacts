@@ -79,3 +79,22 @@ fun Context.shareContact(contact: ContactUiModel) {
 
     startActivity(Intent.createChooser(shareIntent, "Share ${contact.name}'s Contact"))
 }
+
+fun Context.openWhatsApp(phoneNumber: String) {
+    try {
+        // Use the "whatsapp://send" URI with the phone number
+        val uri = Uri.parse("whatsapp://send?phone=$phoneNumber")
+
+        // Create an Intent with the ACTION_VIEW action and the URI
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+
+        // Set the package name to "com.whatsapp"
+        intent.setPackage("com.whatsapp")
+
+        // Start the activity
+        startActivity(intent)
+    } catch (e: Exception) {
+        // Handle exceptions (e.g., WhatsApp not installed)
+        e.printStackTrace()
+    }
+}
