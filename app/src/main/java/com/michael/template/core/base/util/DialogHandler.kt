@@ -8,6 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import com.michael.template.feature.contacts.contactscreen.components.DialogConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val DEFAULT_DIALOG_DURATION = 4000L
 
@@ -28,15 +30,17 @@ class DialogHandler(private val coroutineScope: CoroutineScope) {
             dialogContent = dialogContent,
             visible = true,
         )
-        // auto dismiss
-//        dialogJob?.cancel()
-//        dialogJob = if (_dialogConfig.value.visible) {
-//            coroutineScope.launch {
-//                delay(DEFAULT_DIALOG_DURATION)
-//                dismiss()
-//            }
-//        } else {
-//            null
-//        }
+    }
+
+    fun enableAutoDismiss() {
+        dialogJob?.cancel()
+        dialogJob = if (_dialogConfig.value.visible) {
+            coroutineScope.launch {
+                delay(DEFAULT_DIALOG_DURATION)
+                dismiss()
+            }
+        } else {
+            null
+        }
     }
 }

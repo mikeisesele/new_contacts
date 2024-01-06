@@ -1,4 +1,4 @@
-package com.michael.template.feature.contacts.contactscreen.components
+package com.michael.template.feature.contacts.contactscreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,9 +24,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.michael.template.core.base.model.ImmutableList
 import com.michael.template.core.common.dialPhoneNumber
+import com.michael.template.core.common.openWhatsApp
 import com.michael.template.core.common.shareContact
 import com.michael.template.core.ui.components.CenterColumn
 import com.michael.template.core.ui.theme.Dimens
+import com.michael.template.core.ui.theme.Dimens.PaddingTwoThirds
+import com.michael.template.feature.contacts.contactscreen.components.AnimatedDialog
+import com.michael.template.feature.contacts.contactscreen.components.DialogConfig
+import com.michael.template.feature.contacts.contactscreen.components.NoResultScreen
+import com.michael.template.feature.contacts.contactscreen.components.NoSearchResultScreen
+import com.michael.template.feature.contacts.contactscreen.components.SearchBarComponent
+import com.michael.template.feature.contacts.contactscreen.components.SyncingAnimation
 import com.michael.template.feature.contacts.domain.model.ContactUiModel
 import org.jetbrains.kotlin.utils.addToStdlib.ifNotEmpty
 
@@ -39,36 +48,30 @@ fun ContactScreen(
     searchQuery: String,
     dialogConfig: DialogConfig,
     persistingDays: String,
-    deleteOldContacts: () -> Unit,
 ) {
-    Box {
+    val finalContent = queriedContacts.ifEmpty { contacts }
+    Box(modifier = Modifier.fillMaxSize()) {
         if (isLoading) {
             LoadingScreen()
         } else {
+            val emptyContent = contacts.isEmpty() && contactSynced
+
             Column {
-                if (contacts.isEmpty() && contactSynced) {
+                if (!emptyContent) {
+                    SearchBarComponent(onValueChange = onQueryChanged, searchQuery = searchQuery)
+                }
+
+                if (emptyContent) {
                     EmptyContacts(persistingDays)
                 } else if (queriedContacts.isEmpty() && searchQuery.isNotEmpty()) {
                     NoSearchResultScreen()
                 } else {
-                    val finalContent = queriedContacts.ifEmpty { contacts }
                     LazyColumn(
                         Modifier.padding(
-                            top = Dimens.PaddingHalf,
                             start = Dimens.PaddingEighth,
                             end = Dimens.PaddingEighth,
                         ),
                     ) {
-//                        item {
-//                            Button(onClick = deleteOldContacts) {
-//                                Text(text = "Delete Old Contacts")
-//                            }
-//                        }
-                        if (finalContent.isNotEmpty()) {
-                            item {
-                                SearchBarComponent(onValueChange = onQueryChanged, searchQuery = searchQuery)
-                            }
-                        }
                         items(finalContent) {
                             ContactTile(contact = it)
                         }
@@ -85,24 +88,30 @@ fun ContactScreen(
 fun ContactTile(contact: ContactUiModel, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     Column(
-        Modifier.padding(top = Dimens.PaddingHalf, start = Dimens.PaddingHalf, end = Dimens.PaddingHalf),
+        Modifier.padding(start = Dimens.PaddingHalf, end = Dimens.PaddingHalf),
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(top = Dimens.PaddingHalf, start = Dimens.PaddingHalf, end = Dimens.PaddingHalf)
+                .padding(
+                    top = Dimens.PaddingHalf,
+                    start = Dimens.PaddingHalf,
+                    end = Dimens.PaddingHalf,
+                    bottom = PaddingTwoThirds,
+                )
                 .border(
                     border = BorderStroke(Dimens.BorderStrokeWidth, color = Color.White),
                     shape = RoundedCornerShape(Dimens.RadiusDouble),
                 )
                 .combinedClickable(
-                    onLongClick = { context.shareContact(contact) },
                     onClick = { context.dialPhoneNumber(contact.phones.first()) },
+                    onDoubleClick = { context.shareContact(contact) },
+                    onLongClick = { context.openWhatsApp(contact.phones.first()) },
                 ),
         ) {
             Text(
-                modifier = Modifier.padding(Dimens.PaddingTwoThirds).weight(NAME_WEIGHT),
+                modifier = Modifier.padding(PaddingTwoThirds).weight(NAME_WEIGHT),
                 text = contact.name,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
@@ -111,16 +120,16 @@ fun ContactTile(contact: ContactUiModel, modifier: Modifier = Modifier) {
             Column {
                 Text(
                     modifier = Modifier.padding(
-                        top = Dimens.PaddingTwoThirds,
-                        start = Dimens.PaddingTwoThirds,
-                        end = Dimens.PaddingTwoThirds,
+                        top = PaddingTwoThirds,
+                        start = PaddingTwoThirds,
+                        end = PaddingTwoThirds,
                     ),
                     text = contact.phones.ifNotEmpty { first() } ?: "NAN",
                 )
                 Text(
                     modifier = Modifier
                         .padding(
-                            Dimens.PaddingTwoThirds,
+                            PaddingTwoThirds,
                         )
                         .align(Alignment.End),
                     text = contact.readableDateAdded,
