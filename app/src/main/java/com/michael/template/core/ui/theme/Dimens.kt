@@ -48,8 +48,9 @@ object Dimens {
     val IconSmall = 18.dp
     val IconSizeDefault = 24.dp
     val IconMedium = 28.dp
+    val IconSizeSmall = 16.dp
     val IconSizeLarge = 32.dp
-    val IconSizeExtraLarge = 36.dp
+    val IconSizeExtraLarge = 100.dp
     val CardElevation = 4.dp
 
     val CardElevationHalf = 2.dp
