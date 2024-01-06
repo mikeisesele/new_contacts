@@ -5,9 +5,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.michael.template.core.base.model.ImmutableList
 import com.michael.template.core.base.model.toImmutableList
+import com.michael.template.core.base.util.toSetBy
 import com.michael.template.feature.contacts.domain.model.ContactUiModel
 import com.michael.template.util.isWithinDaysFromToday
 import com.michael.template.util.toReadable
+import org.jetbrains.kotlin.js.inline.util.toIdentitySet
 import java.time.LocalDateTime
 
 @Entity(tableName = "distinct_contact")
@@ -22,6 +24,7 @@ data class DistinctContactModel(
 
 fun List<DistinctContactModel>.toUiModel(daysFromToday: Long): ImmutableList<ContactUiModel> =
     filter { it.dateAdded.isWithinDaysFromToday(daysFromToday) }
+        .toSetBy { it.phones.first() }
         .map { it.toUiModel() }
         .sortedBy { it.dateAdded }
         .reversed()
