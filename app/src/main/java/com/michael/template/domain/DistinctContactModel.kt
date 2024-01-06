@@ -9,7 +9,6 @@ import com.michael.template.core.base.util.toSetBy
 import com.michael.template.feature.contacts.domain.model.ContactUiModel
 import com.michael.template.util.isWithinDaysFromToday
 import com.michael.template.util.toReadable
-import org.jetbrains.kotlin.js.inline.util.toIdentitySet
 import java.time.LocalDateTime
 
 @Entity(tableName = "distinct_contact")
