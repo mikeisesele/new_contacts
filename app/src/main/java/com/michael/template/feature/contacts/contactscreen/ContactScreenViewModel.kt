@@ -148,7 +148,9 @@ class ContactScreenViewModel @Inject constructor(
         if (!defaultSet) {
             displayDefaultOptions()
         } else {
-            getLatestContacts()
+            if (state.value.updatedContacts.isEmpty()) {
+                getLatestContacts()
+            }
         }
     }
 
@@ -171,4 +173,5 @@ class ContactScreenViewModel @Inject constructor(
     }
 
     private fun loadDaysPersisted() = sharedPref.loadFromSharedPref<Long>(PreferenceType.LONG, PERSISTENCE_KEY)
+
 }

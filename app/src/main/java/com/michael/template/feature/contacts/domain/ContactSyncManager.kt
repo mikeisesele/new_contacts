@@ -21,7 +21,7 @@ class ContactSyncManager @Inject constructor(
     private val context: Context,
 ) {
 
-    suspend fun syncContacts(block: suspend () -> Unit) {
+    suspend fun syncContacts(block: (suspend () -> Unit?)? = null) {
         val phoneContacts = readContacts("${ContactsContract.Contacts._ID} desc")
         val basePhoneContacts = phoneContacts.map { it.toOldContactModel() }
 
@@ -43,7 +43,7 @@ class ContactSyncManager @Inject constructor(
 
     private suspend fun updateNewContacts(
         contactsNotInDatabase: List<DistinctContactModel>,
-        block: suspend () -> Unit,
+        block: (suspend () -> Unit?)?,
     ) {
         contactRepository.getDistinctContacts().collectLatest { distinctContacts ->
             val newMapped = contactsNotInDatabase.map {
@@ -57,7 +57,9 @@ class ContactSyncManager @Inject constructor(
 
             contactRepository.insertDistinctContacts(formattedContacts)
             contactRepository.deleteNewlyFetchedContacts()
-            block()
+            if (block != null) {
+                block()
+            }
         }
     }
 
