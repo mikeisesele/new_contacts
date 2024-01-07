@@ -45,5 +45,5 @@ object LocalModule {
 
     @Provides
     @Singleton
-    fun provideWallPaperDao(database: AppDatabase): ContactDAO = database.contactDAO()
+    fun provideContactDao(database: AppDatabase): ContactDAO = database.contactDAO()
 }

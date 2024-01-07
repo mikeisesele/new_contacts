@@ -13,7 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 class ContactSyncManager @Inject constructor(
@@ -47,7 +48,7 @@ class ContactSyncManager @Inject constructor(
     ) {
         contactRepository.getDistinctContacts().collectLatest { distinctContacts ->
             val newMapped = contactsNotInDatabase.map {
-                it.copy(dateAdded = LocalDateTime.now())
+                it.copy(dateAdded = ZonedDateTime.now(ZoneId.systemDefault()))
             }
             val formattedContacts = distinctContacts
                 .toMutableList()

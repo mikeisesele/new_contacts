@@ -4,7 +4,7 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class ContactPhoneConverter {
 
@@ -21,12 +21,12 @@ class ContactPhoneConverter {
     }
 
     @TypeConverter
-    fun fromTimestamp(value: String?): LocalDateTime? {
-        return value?.let { LocalDateTime.parse(it) }
+    fun fromTimestamp(value: String?): ZonedDateTime? {
+        return value?.let { ZonedDateTime.parse(it) }
     }
 
     @TypeConverter
-    fun dateToTimestamp(date: LocalDateTime?): String? {
+    fun dateToTimestamp(date: ZonedDateTime?): String? {
         return date?.toString()
     }
 }

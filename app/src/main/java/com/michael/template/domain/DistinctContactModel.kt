@@ -8,7 +8,7 @@ import com.michael.template.core.base.model.toImmutableList
 import com.michael.template.feature.contacts.domain.model.ContactUiModel
 import com.michael.template.util.isWithinDaysFromToday
 import com.michael.template.util.toReadable
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Entity(tableName = "distinct_contact")
 @Keep
@@ -17,7 +17,7 @@ data class DistinctContactModel(
     val id: Long,
     val name: String,
     val phones: List<String>,
-    val dateAdded: LocalDateTime,
+    val dateAdded: ZonedDateTime,
 )
 
 fun List<DistinctContactModel>.toUiModel(daysFromToday: Long): ImmutableList<ContactUiModel> =

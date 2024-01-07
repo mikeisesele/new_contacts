@@ -13,7 +13,7 @@ const val DB_NAME = "latest_contacts"
 
 @Database(
     entities = [DistinctContactModel::class, OldContactModel::class, NewlyFetchedContacts::class],
-    version = 4,
+    version = 5,
     exportSchema = false,
 )
 @TypeConverters(ContactPhoneConverter::class)

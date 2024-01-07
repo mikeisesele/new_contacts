@@ -3,7 +3,7 @@ package com.michael.template.domain
 import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 @Entity(tableName = "old_contacts")
 @Keep
@@ -12,12 +12,5 @@ data class OldContactModel(
     val id: Long,
     val name: String,
     val phones: List<String>,
-    val dateAdded: LocalDateTime? = null,
-)
-
-fun OldContactModel.toContactModel(): DistinctContactModel = DistinctContactModel(
-    id = id,
-    name = name,
-    phones = phones,
-    dateAdded = LocalDateTime.now(),
+    val dateAdded: ZonedDateTime? = null,
 )

@@ -33,7 +33,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.kotlin.utils.ifEmpty
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
@@ -126,7 +127,7 @@ class ContactScreenViewModel @Inject constructor(
     }
 
     private fun clearOldContacts() = launch {
-        val currentTime = LocalDateTime.now()
+        val currentTime = ZonedDateTime.now(ZoneId.systemDefault())
         contactsRepository.getDistinctContacts().collect {
             val oldContacts = it.filter { model ->
                 model.dateAdded.isBefore(currentTime.minusDays(daysPersisted))

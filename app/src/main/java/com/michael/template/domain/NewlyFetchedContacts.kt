@@ -3,7 +3,8 @@ package com.michael.template.domain
 import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @Entity(tableName = "newly_fetched")
 @Keep
@@ -12,7 +13,7 @@ data class NewlyFetchedContacts(
     val id: Long,
     val name: String,
     val phones: List<String>,
-    val dateAdded: LocalDateTime? = null,
+    val dateAdded: ZonedDateTime? = null,
 )
 
 fun NewlyFetchedContacts.toOldContactModel(): OldContactModel = OldContactModel(
@@ -24,5 +25,5 @@ fun NewlyFetchedContacts.toUniqueContactModel(): DistinctContactModel = Distinct
     id = id,
     name = name,
     phones = phones,
-    dateAdded = LocalDateTime.now(),
+    dateAdded = ZonedDateTime.now(ZoneId.systemDefault()),
 )
