@@ -13,7 +13,6 @@ data class NewlyFetchedContacts(
     val id: Long,
     val name: String,
     val phones: List<String>,
-    val dateAdded: ZonedDateTime? = null,
 )
 
 fun NewlyFetchedContacts.toOldContactModel(): OldContactModel = OldContactModel(

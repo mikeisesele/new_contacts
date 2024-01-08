@@ -13,8 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import javax.inject.Inject
 
 class ContactSyncManager @Inject constructor(
@@ -47,12 +45,9 @@ class ContactSyncManager @Inject constructor(
         block: (suspend () -> Unit?)?,
     ) {
         contactRepository.getDistinctContacts().collectLatest { distinctContacts ->
-            val newMapped = contactsNotInDatabase.map {
-                it.copy(dateAdded = ZonedDateTime.now(ZoneId.systemDefault()))
-            }
             val formattedContacts = distinctContacts
                 .toMutableList()
-                .apply { addAll(newMapped) }
+                .apply { addAll(contactsNotInDatabase) }
                 .sortedBy { it.dateAdded }
                 .reversed()
 
