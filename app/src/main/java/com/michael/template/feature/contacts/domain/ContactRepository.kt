@@ -7,6 +7,7 @@ import com.michael.template.feature.contacts.local.ContactDAO
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+@Suppress("TooManyFunctions")
 class ContactRepository @Inject constructor(private val contactDAO: ContactDAO) {
     fun getNewlyFetchedContacts(): Flow<List<NewlyFetchedContacts>> = contactDAO.getNewlyFetchedContacts()
     fun getDistinctContacts() = contactDAO.getDistinctContacts()
@@ -22,7 +23,7 @@ class ContactRepository @Inject constructor(private val contactDAO: ContactDAO) 
         contactDAO.insertDistinctContacts(newContacts)
     }
 
-    suspend fun insertPhoneContacts(oldContacts: List<OldContactModel>) {
+    suspend fun insertOldContacts(oldContacts: List<OldContactModel>) {
         contactDAO.insertOldContacts(oldContacts)
     }
 

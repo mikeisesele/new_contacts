@@ -23,6 +23,7 @@ import com.michael.template.core.ui.extensions.clickable
 import com.michael.template.core.ui.theme.Dimens
 import com.michael.template.core.ui.theme.Dimens.Padding40
 import com.michael.template.feature.contacts.domain.model.MONTHS
+import com.michael.template.util.Constants.FLOAT_SEVEN
 
 @Composable
 fun DefaultOptionsComponent(onDurationSelected: (MONTHS) -> Unit) {
@@ -39,6 +40,7 @@ fun DefaultOptionsComponent(onDurationSelected: (MONTHS) -> Unit) {
             ),
             text = "How long should we display your newly saved contacts",
             textAlign = TextAlign.Center,
+            style = TextStyle(fontWeight = FontWeight.Bold),
         )
 
         Row(
@@ -53,7 +55,11 @@ fun DefaultOptionsComponent(onDurationSelected: (MONTHS) -> Unit) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(Dimens.PaddingDefault),
+                        modifier = Modifier
+                            .background(
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = FLOAT_SEVEN),
+                            )
+                            .padding(Dimens.PaddingDefault),
                     ) {
                         Text(
                             modifier = Modifier.wrapContentWidth(),
