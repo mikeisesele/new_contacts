@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.michael.template.core.base.contract.ViewEvent
 import com.michael.template.core.base.model.ImmutableList
 import com.michael.template.core.base.model.emptyImmutableList
+import com.michael.template.core.base.model.toImmutableList
 import com.michael.template.core.data.PreferenceType
 import com.michael.template.core.data.SharedPref
 import com.michael.template.domain.toUiModel
@@ -15,6 +16,7 @@ import com.michael.template.feature.contacts.contactscreen.contracts.ContactsSid
 import com.michael.template.feature.contacts.domain.ContactRepository
 import com.michael.template.feature.contacts.domain.ContactSyncManager
 import com.michael.template.feature.contacts.domain.model.ContactUiModel
+import com.michael.template.feature.contacts.domain.model.DisplaySort
 import com.michael.template.feature.contacts.domain.model.MONTHS
 import com.michael.template.util.Constants.DEFAULT_PERSISTENCE_SET
 import com.michael.template.util.Constants.ONE_MONTH
@@ -30,6 +32,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.kotlin.utils.ifEmpty
@@ -47,6 +50,8 @@ class ContactScreenViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(ContactScreenState.initialState)
     val state = _state.asStateFlow()
+    private val currentState
+        get() = state.value
 
     private val eventsFlow = Channel<ViewEvent>(
         capacity = Int.MAX_VALUE,
@@ -56,11 +61,8 @@ class ContactScreenViewModel @Inject constructor(
         },
     )
 
-    private fun dispatchViewEvent(event: ViewEvent) {
-        launch {
-            eventsFlow.send(event)
-        }
-    }
+    private fun dispatchViewEvent(event: ViewEvent) = launch { eventsFlow.send(event) }
+
     val events
         get() = eventsFlow.receiveAsFlow()
 
@@ -87,23 +89,28 @@ class ContactScreenViewModel @Inject constructor(
     private fun getLatestContacts() = launch {
         setLoadingState()
         contactSyncManager.syncContacts {
-            contactsRepository.getDistinctContacts().collectLatest { contacts ->
-                updateUI(contacts = contacts.toUiModel(daysPersisted))
+            contactsRepository.getDistinctContacts().take(1).collectLatest { contacts ->
+                val mappedContacts = contacts.toUiModel(daysPersisted)
+                updateUI(contacts = mappedContacts)
             }
         }
     }
 
-    private fun updateUI(contacts: ImmutableList<ContactUiModel>) = updateState { state ->
-        state.copy(
-            loading = false,
-            contactsSyncFinished = true,
-            updatedContacts = contacts,
-            persistingDays = daysPersisted.toString(),
-        )
+    private fun updateUI(contacts: ImmutableList<ContactUiModel>) {
+        launch {
+            contactsRepository.deleteNewlyFetchedContacts()
+        }
+        updateState { state ->
+            state.copy(
+                loading = false,
+                contactsSyncFinished = true,
+                updatedContacts = contacts,
+                persistingDays = daysPersisted.toString(),
+            )
+        }
     }
 
-    fun deleteOldContacts() = launch { contactsRepository.deleteOldContacts() }
-    fun resetSync() = updateState { state ->
+    private fun resetSync() = updateState { state ->
         state.copy(contactsSyncFinished = false)
     }
 
@@ -111,7 +118,7 @@ class ContactScreenViewModel @Inject constructor(
         state.copy(loading = true)
     }
 
-    fun searchContacts(query: String) {
+    private fun searchContacts(query: String) {
         val trimmedQuery = query.trim().lowercase()
         launch {
             val queriedList = contactsRepository.getMatchingContacts("%$trimmedQuery%")
@@ -120,6 +127,11 @@ class ContactScreenViewModel @Inject constructor(
                     searchQuery = query,
                     queriedContacts = queriedList
                         .toUiModel(daysPersisted)
+                        .ifEmpty {
+                            currentState.updatedContacts.filter {
+                                trimmedQuery in it.readableDateAdded
+                            }
+                        }.toImmutableList()
                         .ifEmpty { emptyImmutableList() },
                 )
             }
@@ -139,17 +151,20 @@ class ContactScreenViewModel @Inject constructor(
 
     fun onViewAction(viewAction: ContactScreenViewAction) {
         when (viewAction) {
-            is ContactScreenViewAction.SelectDefaultDuration -> {
-                setDefaultOption(viewAction.duration)
-            }
+            is ContactScreenViewAction.SelectDefaultDuration -> setDefaultOption(viewAction.duration)
+            is ContactScreenViewAction.SearchContacts -> searchContacts(viewAction.query)
+            ContactScreenViewAction.ToggleSort -> toggleSort()
+            ContactScreenViewAction.ResetSync -> resetSync()
         }
     }
+
     fun handlePersistenceDefaults() {
         daysPersisted = loadDaysPersisted()
+
         if (!defaultSet) {
             displayDefaultOptions()
         } else {
-            if (state.value.updatedContacts.isEmpty()) {
+            if (currentState.updatedContacts.isEmpty()) {
                 getLatestContacts()
             }
         }
@@ -174,4 +189,26 @@ class ContactScreenViewModel @Inject constructor(
     }
 
     private fun loadDaysPersisted() = sharedPref.loadFromSharedPref<Long>(PreferenceType.LONG, PERSISTENCE_KEY)
+
+    private fun toggleSort() {
+        if (currentState.currentDisplaySort == DisplaySort.DATE_ADDED) {
+            updateState { state ->
+                state.copy(
+                    updatedContacts = currentState.updatedContacts.sortedBy {
+                        it.name
+                    }.toImmutableList(),
+                    currentDisplaySort = DisplaySort.NAME,
+                )
+            }
+        } else {
+            updateState { state ->
+                state.copy(
+                    updatedContacts = currentState.updatedContacts.sortedBy {
+                        it.readableDateAdded
+                    }.toImmutableList(),
+                    currentDisplaySort = DisplaySort.DATE_ADDED,
+                )
+            }
+        }
+    }
 }

@@ -32,7 +32,7 @@ import com.michael.template.feature.contacts.contactscreen.ContactScreen
 import com.michael.template.feature.contacts.contactscreen.ContactScreenViewModel
 import com.michael.template.feature.contacts.contactscreen.components.DefaultOptionsComponent
 import com.michael.template.feature.contacts.contactscreen.components.FloatingActionButtonComponent
-import com.michael.template.feature.contacts.contactscreen.components.InteractionGuide
+import com.michael.template.feature.contacts.contactscreen.contracts.ContactScreenViewAction
 import com.michael.template.feature.contacts.contactscreen.contracts.ContactScreenViewAction.SelectDefaultDuration
 import com.michael.template.feature.contacts.contactscreen.contracts.ContactsSideEffects
 import com.michael.template.feature.contacts.domain.model.MONTHS
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        contactScreenViewModel.resetSync()
+        contactScreenViewModel.onViewAction(ContactScreenViewAction.ResetSync)
         setContent {
             val state by rememberStateWithLifecycle(contactScreenViewModel.state)
             val coroutineScope = rememberCoroutineScope()
@@ -73,9 +73,10 @@ class MainActivity : AppCompatActivity() {
                     floatingActionButtonPosition = FabPosition.End,
                     floatingActionButton = {
                         FloatingActionButtonComponent {
-                            dialogHandler.show {
-                                InteractionGuide { dialogHandler.dismiss() }
-                            }
+                            contactScreenViewModel.onViewAction(ContactScreenViewAction.ToggleSort)
+//                            dialogHandler.show {
+//                                InteractionGuide { dialogHandler.dismiss() }
+//                            }
                         }
                     },
                 ) {
@@ -88,7 +89,10 @@ class MainActivity : AppCompatActivity() {
                         searchQuery = state.searchQuery,
                         dialogConfig = dialogConfig,
                         persistingDays = state.persistingDays,
-                        onQueryChanged = { contactScreenViewModel.searchContacts(it) },
+                        onQueryChanged = {
+                            contactScreenViewModel
+                                .onViewAction(ContactScreenViewAction.SearchContacts(it))
+                        },
                     )
                 }
             }
