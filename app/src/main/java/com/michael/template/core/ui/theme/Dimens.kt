@@ -65,9 +65,13 @@ object Dimens {
     val FontSizeDefault = 16.sp
     val FontSize8 = 8.sp
     val FontSize12 = 12.sp
+    val FontSize14 = 14.sp
     val FontSize10 = 10.sp
     val FontSize4 = 4.sp
 
     val FontSizeHalf = 8.sp
     val Text30 = 30.sp
+    val Size36 = 36.dp
+
+    val height = 8.dp
 }
