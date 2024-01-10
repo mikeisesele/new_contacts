@@ -6,13 +6,13 @@ import android.content.Context
 import android.provider.ContactsContract
 import com.michael.template.domain.DistinctContactModel
 import com.michael.template.domain.NewlyFetchedContacts
+import com.michael.template.domain.OldContactModel
 import com.michael.template.domain.toOldContactModel
+import com.michael.template.domain.toOldContacts
 import com.michael.template.domain.toUniqueContactModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.take
 import javax.inject.Inject
 
 class ContactSyncManager @Inject constructor(
@@ -22,40 +22,37 @@ class ContactSyncManager @Inject constructor(
 
     suspend fun syncContacts(block: (suspend () -> Unit?)? = null) {
         val phoneContacts = readContacts("${ContactsContract.Contacts._ID} desc")
-        val basePhoneContacts = phoneContacts.map { it.toOldContactModel() }
+        val oldContacts = phoneContacts.map { it.toOldContactModel() }
 
-        try {
-            CoroutineScope(Dispatchers.IO).launch {
-                contactRepository.insertNewlyFetchedContacts(phoneContacts)
-                contactRepository.getOldContacts().first().ifEmpty {
-                    contactRepository.insertPhoneContacts(basePhoneContacts)
-                }
-                contactRepository.getNewlyFetchedContacts().collectLatest { contacts ->
-                    val uniqueContacts = contacts.map { it.toUniqueContactModel() }
-                    updateNewContacts(uniqueContacts, block)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        contactRepository.insertNewlyFetchedContacts(phoneContacts)
+        contactRepository.getOldContacts().take(1).first().ifEmpty {
+            contactRepository.insertOldContacts(oldContacts)
+        }
+        contactRepository.getNewlyFetchedContacts().take(1).collectLatest { contacts ->
+            val contactsNotInOldContactsDatabase = contacts.map { it.toUniqueContactModel() }
+            updateNewContacts(
+                contactsNotInOldContactsDatabase,
+                oldContacts,
+                block,
+            )
         }
     }
 
     private suspend fun updateNewContacts(
-        contactsNotInDatabase: List<DistinctContactModel>,
+        contactsNotInOldContactsDatabase: List<DistinctContactModel>,
+        oldContacts: List<OldContactModel>,
         block: (suspend () -> Unit?)?,
     ) {
-        contactRepository.getDistinctContacts().collectLatest { distinctContacts ->
+        contactRepository.getDistinctContacts().take(1).collectLatest { distinctContacts ->
             val formattedContacts = distinctContacts
                 .toMutableList()
-                .apply { addAll(contactsNotInDatabase) }
-                .sortedBy { it.dateAdded }
-                .reversed()
+                .apply { addAll(contactsNotInOldContactsDatabase) }
 
             contactRepository.insertDistinctContacts(formattedContacts)
-            contactRepository.deleteNewlyFetchedContacts()
-            if (block != null) {
-                block()
-            }
+            block?.invoke()
+            val mappedOldContacts = contactsNotInOldContactsDatabase.map { it.toOldContacts() }
+            val updatedOldContacts = mappedOldContacts.toMutableList().apply { addAll(oldContacts) }
+            contactRepository.insertOldContacts(updatedOldContacts)
         }
     }
 
