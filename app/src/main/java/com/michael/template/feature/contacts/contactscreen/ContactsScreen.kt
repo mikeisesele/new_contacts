@@ -25,7 +25,7 @@ import com.michael.template.feature.contacts.contactscreen.components.NoResultSc
 import com.michael.template.feature.contacts.contactscreen.components.NoSearchResultScreen
 import com.michael.template.feature.contacts.contactscreen.components.SearchBarComponent
 import com.michael.template.feature.contacts.contactscreen.components.SyncingAnimation
-import com.michael.template.feature.contacts.domain.model.NestedListItem
+import com.michael.template.feature.contacts.domain.model.NestedListContentType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -35,8 +35,8 @@ private const val COMPLETE_PROGRESS_STATE = 1.0f
 
 @Composable
 fun ContactScreen(
-    contacts: ImmutableList<NestedListItem>,
-    queriedContacts: ImmutableList<NestedListItem>,
+    contacts: ImmutableList<NestedListContentType>,
+    queriedContacts: ImmutableList<NestedListContentType>,
     onQueryChanged: (String) -> Unit,
     isLoading: Boolean,
     contactSynced: Boolean,
@@ -64,7 +64,7 @@ fun ContactScreen(
         }
     }
 
-    val finalContent = queriedContacts.ifEmpty { contacts }
+    val nestedListItems = queriedContacts.ifEmpty { contacts }
     Box(modifier = Modifier.fillMaxSize()) {
         if (isLoading) {
             LoadingScreen(progress)
@@ -83,9 +83,7 @@ fun ContactScreen(
                 } else if (queriedContacts.isEmpty() && searchQuery.isNotEmpty()) {
                     NoSearchResultScreen()
                 } else {
-                    finalContent.forEach { nestedListItem ->
-                        NestedListItemComponent(nestedListItem)
-                    }
+                    NestedListItemComponent(nestedListItems)
                 }
             }
             AnimatedDialog(dialogConfig = dialogConfig)

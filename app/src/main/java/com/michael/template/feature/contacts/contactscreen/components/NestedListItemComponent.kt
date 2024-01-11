@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,28 +31,38 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import com.michael.template.core.base.model.ImmutableList
 import com.michael.template.core.base.util.toHslColor
 import com.michael.template.core.common.dialPhoneNumber
 import com.michael.template.core.common.openWhatsApp
 import com.michael.template.core.common.shareContact
 import com.michael.template.core.ui.theme.Dimens
 import com.michael.template.feature.contacts.domain.model.ContactUiModel
-import com.michael.template.feature.contacts.domain.model.NestedListItem
+import com.michael.template.feature.contacts.domain.model.NestedListContentType
 import com.michael.template.util.Constants
 import org.jetbrains.kotlin.utils.addToStdlib.ifNotEmpty
 
 @Composable
 fun NestedListItemComponent(
-    nestedListItem: NestedListItem,
+    nestedListItem: ImmutableList<NestedListContentType>,
 ) {
     LazyColumn(
         modifier = Modifier.padding(horizontal = Dimens.PaddingHalf),
     ) {
-        item {
-            ContactTileHeader(nestedListItem.timeFrame)
-        }
-        items(nestedListItem.contacts) {
-            ContactTile(contact = it)
+        itemsIndexed(nestedListItem) { index, nestedListContent ->
+//            val isNextItemHeader = index == nestedListItem.lastIndex ||
+//                nestedListItem[index + 1] is NestedListContentType.Header
+//            val isPreviousItemHeader = index > 0 &&
+//                    nestedListItem[index - 1] is NestedListContentType.Header
+
+            when (nestedListContent) {
+                is NestedListContentType.Header -> {
+                    ContactTileHeader(nestedListContent.header)
+                }
+                is ContactUiModel -> {
+                    ContactTile(contact = nestedListContent)
+                }
+            }
         }
         item {
             Spacer(modifier = Modifier.padding(Dimens.PaddingDefault))
@@ -65,9 +75,7 @@ private fun ContactTileHeader(header: String) {
     Text(
         text = header,
         modifier = Modifier.padding(
-            start = Dimens.PaddingDefault,
-            end = Dimens.PaddingDefault,
-            bottom = Dimens.PaddingDefault,
+            Dimens.PaddingDefault,
         ).fillMaxWidth(),
         style = TextStyle(
             fontWeight = FontWeight.Bold,

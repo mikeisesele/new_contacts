@@ -8,4 +8,4 @@ data class ContactUiModel(
     val phones: List<String>,
     val dateAdded: ZonedDateTime,
     val readableDateAdded: String,
-)
+) : NestedListContentType.Content

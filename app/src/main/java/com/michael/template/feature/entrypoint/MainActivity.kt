@@ -32,6 +32,7 @@ import com.michael.template.feature.contacts.contactscreen.ContactScreen
 import com.michael.template.feature.contacts.contactscreen.ContactScreenViewModel
 import com.michael.template.feature.contacts.contactscreen.components.DefaultOptionsComponent
 import com.michael.template.feature.contacts.contactscreen.components.FloatingActionButtonComponent
+import com.michael.template.feature.contacts.contactscreen.components.InteractionGuide
 import com.michael.template.feature.contacts.contactscreen.contracts.ContactScreenViewAction
 import com.michael.template.feature.contacts.contactscreen.contracts.ContactScreenViewAction.SelectDefaultDuration
 import com.michael.template.feature.contacts.contactscreen.contracts.ContactsSideEffects
@@ -73,10 +74,7 @@ class MainActivity : AppCompatActivity() {
                     floatingActionButtonPosition = FabPosition.End,
                     floatingActionButton = {
                         FloatingActionButtonComponent {
-                            contactScreenViewModel.onViewAction(ContactScreenViewAction.ToggleSort)
-//                            dialogHandler.show {
-//                                InteractionGuide { dialogHandler.dismiss() }
-//                            }
+                            contactScreenViewModel.onViewAction(ContactScreenViewAction.DisplayGuides)
                         }
                     },
                 ) {
@@ -146,6 +144,11 @@ private fun subscribeToSideEffects(
                 when (viewEvent.effect) {
                     ContactsSideEffects.DisplayDefaultOptions -> {
                         displayDefaultOptions(dialogHandler, onDurationSelected)
+                    }
+                    ContactsSideEffects.DisplayGuides -> {
+                        dialogHandler.show {
+                            InteractionGuide { dialogHandler.dismiss() }
+                        }
                     }
                 }
             }
