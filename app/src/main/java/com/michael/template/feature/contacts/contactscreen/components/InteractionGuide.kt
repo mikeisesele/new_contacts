@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -35,7 +34,10 @@ fun InteractionGuide(dismissDialog: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(Dimens.PaddingHalf)
-                .background(MaterialTheme.colorScheme.onBackground, shape = RoundedCornerShape(Dimens.RadiusDouble)),
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(Dimens.RadiusDouble),
+                ),
         ) {
             item {
                 Text(

@@ -4,4 +4,5 @@ import com.michael.template.core.base.contract.SideEffect
 
 sealed class ContactsSideEffects : SideEffect {
     object DisplayDefaultOptions : ContactsSideEffects()
+    object DisplayGuides : ContactsSideEffects()
 }
