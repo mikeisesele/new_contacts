@@ -29,4 +29,7 @@ object Constants {
     const val FLOAT_FOUR = 0.4f
     const val THIRTY_SEVEN = 37
     const val THREE_SIXTY = 360
+    const val TWO = 2L
+    const val THREE = 3L
+    const val FOUR = 4L
 }

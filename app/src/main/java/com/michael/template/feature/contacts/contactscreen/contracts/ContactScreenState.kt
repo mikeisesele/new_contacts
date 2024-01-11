@@ -2,13 +2,13 @@ package com.michael.template.feature.contacts.contactscreen.contracts
 
 import com.michael.template.core.base.model.ImmutableList
 import com.michael.template.core.base.model.emptyImmutableList
-import com.michael.template.feature.contacts.domain.model.ContactUiModel
 import com.michael.template.feature.contacts.domain.model.DisplaySort
+import com.michael.template.feature.contacts.domain.model.NestedListItem
 
 data class ContactScreenState(
     val loading: Boolean,
-    val updatedContacts: ImmutableList<ContactUiModel>,
-    val queriedContacts: ImmutableList<ContactUiModel>,
+    val updatedContacts: ImmutableList<NestedListItem>,
+    val queriedContacts: ImmutableList<NestedListItem>,
     val persistingDays: String,
     val contactsSyncFinished: Boolean,
     val searchQuery: String,

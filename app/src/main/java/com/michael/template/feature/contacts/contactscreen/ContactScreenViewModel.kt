@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.michael.template.core.base.contract.ViewEvent
 import com.michael.template.core.base.model.ImmutableList
 import com.michael.template.core.base.model.emptyImmutableList
+import com.michael.template.core.base.model.sortedBy
 import com.michael.template.core.base.model.toImmutableList
 import com.michael.template.core.data.PreferenceType
 import com.michael.template.core.data.SharedPref
@@ -15,9 +16,9 @@ import com.michael.template.feature.contacts.contactscreen.contracts.ContactScre
 import com.michael.template.feature.contacts.contactscreen.contracts.ContactsSideEffects
 import com.michael.template.feature.contacts.domain.ContactRepository
 import com.michael.template.feature.contacts.domain.ContactSyncManager
-import com.michael.template.feature.contacts.domain.model.ContactUiModel
 import com.michael.template.feature.contacts.domain.model.DisplaySort
 import com.michael.template.feature.contacts.domain.model.MONTHS
+import com.michael.template.feature.contacts.domain.model.NestedListItem
 import com.michael.template.util.Constants.DEFAULT_PERSISTENCE_SET
 import com.michael.template.util.Constants.ONE_MONTH
 import com.michael.template.util.Constants.PERSISTENCE_KEY
@@ -96,7 +97,7 @@ class ContactScreenViewModel @Inject constructor(
         }
     }
 
-    private fun updateUI(contacts: ImmutableList<ContactUiModel>) {
+    private fun updateUI(contacts: ImmutableList<NestedListItem>) {
         launch {
             contactsRepository.deleteNewlyFetchedContacts()
         }
@@ -128,8 +129,8 @@ class ContactScreenViewModel @Inject constructor(
                     queriedContacts = queriedList
                         .toUiModel(daysPersisted)
                         .ifEmpty {
-                            currentState.updatedContacts.filter {
-                                trimmedQuery in it.readableDateAdded
+                            currentState.updatedContacts.filter { nestedList ->
+                                trimmedQuery in nestedList.contacts.map { it.readableDateAdded }
                             }
                         }.toImmutableList()
                         .ifEmpty { emptyImmutableList() },
@@ -191,24 +192,27 @@ class ContactScreenViewModel @Inject constructor(
     private fun loadDaysPersisted() = sharedPref.loadFromSharedPref<Long>(PreferenceType.LONG, PERSISTENCE_KEY)
 
     private fun toggleSort() {
-        if (currentState.currentDisplaySort == DisplaySort.DATE_ADDED) {
-            updateState { state ->
-                state.copy(
-                    updatedContacts = currentState.updatedContacts.sortedBy {
-                        it.name
-                    }.toImmutableList(),
-                    currentDisplaySort = DisplaySort.NAME,
-                )
+        updateState { state ->
+            val updatedContacts = if (currentState.currentDisplaySort == DisplaySort.DATE_ADDED) {
+                currentState.updatedContacts.map { nestedItem ->
+                    val sortedSublist = nestedItem.contacts.sortedBy { it.name }
+                    NestedListItem(nestedItem.timeFrame, sortedSublist)
+                }.toImmutableList()
+            } else {
+                currentState.updatedContacts.map { nestedItem ->
+                    val sortedSublist = nestedItem.contacts.sortedBy { it.readableDateAdded }
+                    NestedListItem(nestedItem.timeFrame, sortedSublist)
+                }.toImmutableList()
             }
-        } else {
-            updateState { state ->
-                state.copy(
-                    updatedContacts = currentState.updatedContacts.sortedBy {
-                        it.readableDateAdded
-                    }.toImmutableList(),
-                    currentDisplaySort = DisplaySort.DATE_ADDED,
-                )
-            }
+
+            state.copy(
+                updatedContacts = updatedContacts,
+                currentDisplaySort = if (currentState.currentDisplaySort == DisplaySort.DATE_ADDED) {
+                    DisplaySort.NAME
+                } else {
+                    DisplaySort.DATE_ADDED
+                },
+            )
         }
     }
 }
