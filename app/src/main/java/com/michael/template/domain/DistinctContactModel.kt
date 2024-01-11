@@ -55,13 +55,13 @@ fun List<ContactUiModel>.groupContactsByTime(): ImmutableList<NestedListItem> {
 
     return groupBy {
         when {
-            it.dateAdded.isAfter(now.minusDays(1)) -> "RECENTLY"
-            it.dateAdded.isAfter(now.minusWeeks(1)) -> "THIS WEEK"
-            it.dateAdded.isAfter(now.minusWeeks(TWO)) -> "LAST WEEK"
-            it.dateAdded.isAfter(now.minusMonths(1)) -> "EARLIER THIS MONTH"
-            it.dateAdded.isAfter(now.minusMonths(TWO)) -> "LAST MONTH"
-            it.dateAdded.isAfter(now.minusMonths(THREE)) -> "2 MONTHS AGO"
-            it.dateAdded.isAfter(now.minusMonths(FOUR)) -> "3 MONTHS AGO"
+            it.dateAdded.isAfter(now.minusDays(1)) -> "Recently"
+            it.dateAdded.isAfter(now.minusWeeks(1)) -> "This Week"
+            it.dateAdded.isAfter(now.minusWeeks(TWO)) -> "Last Week"
+            it.dateAdded.isAfter(now.minusMonths(1)) -> "Earlier This Month"
+            it.dateAdded.isAfter(now.minusMonths(TWO)) -> "Last Month"
+            it.dateAdded.isAfter(now.minusMonths(THREE)) -> "2 Months Ago"
+            it.dateAdded.isAfter(now.minusMonths(FOUR)) -> "3 Months Ago"
             else -> "Older"
         }
     }.map { (timeFrame, contacts) ->
