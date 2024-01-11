@@ -19,6 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import com.michael.template.core.ui.components.CenterColumn
 import com.michael.template.core.ui.components.Spacer
 import com.michael.template.core.ui.theme.Dimens
@@ -59,6 +61,10 @@ fun SyncingAnimation(progress: Float) {
                 .graphicsLayer(
                     alpha = alpha.floatValue,
                 ),
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.secondary,
+            ),
         )
     }
 }
