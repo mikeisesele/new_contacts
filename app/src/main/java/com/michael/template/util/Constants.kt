@@ -32,4 +32,5 @@ object Constants {
     const val TWO = 2L
     const val THREE = 3L
     const val FOUR = 4L
+    const val FIVE = 5L
 }
